@@ -3,111 +3,212 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#14191b">
 <title>Virtual tours, video edits &amp; websites</title>
 <meta name="description" content="3D property walkthroughs, video edits and websites for holiday homes and small businesses in Kerry.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
 <!--
-  Portfolio: three services; tap one to see its work. Add work in the WORK list near the bottom
-  (type: 'tours' | 'video' | 'web'). An item with show: false stays hidden -- use that for anything the
-  owner hasn't agreed to show yet.
+  Portfolio, in the walkthrough's look: dark see-through glass panels with gold accents over a backdrop of
+  the lodge. Three services; tap one to see its work.
+  Add work in the WORK list near the bottom (type: 'tours' | 'video' | 'web'). An item with show: false stays
+  hidden -- use that for anything the owner hasn't agreed to show yet.
 -->
 <style>
   :root {
-    --bg: #14191b; --panel: #1d2427; --panel-2: #242c30; --edge: rgba(243, 241, 234, 0.10);
-    --ink: #f3f1ea; --mist: #aab5b8; --gold: #e0a64e; --gold-soft: rgba(224, 166, 78, 0.14);
+    /* the walkthrough's palette */
+    --slate: #14191b;
+    --glass: rgba(24, 30, 33, 0.58);
+    --glass-2: rgba(36, 44, 48, 0.55);
+    --edge: rgba(243, 241, 234, 0.12);
+    --ink: #f3f1ea;
+    --mist: #aab5b8;
+    --oak: #c9873b;
+    --gold: #f1c27d;
+    --gold-soft: rgba(201, 135, 59, 0.22);
+    --gold-line: rgba(201, 135, 59, 0.55);
+    --gold-grad: linear-gradient(135deg, #f6d29a 0%, #e0a64e 45%, #c9873b 100%);
+    --blur: blur(16px) saturate(1.25);
     color-scheme: dark;
   }
-  @media (prefers-color-scheme: light) {
-    :root {
-      --bg: #f5f3ee; --panel: #ffffff; --panel-2: #f0ede6; --edge: rgba(20, 25, 27, 0.10);
-      --ink: #15191a; --mist: #5c6764; --gold: #a8690f; --gold-soft: rgba(168, 105, 15, 0.10);
-      color-scheme: light;
-    }
-  }
   * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
   body {
-    margin: 0; background: var(--bg); color: var(--ink);
+    margin: 0; color: var(--ink); background: var(--slate);
     font: 16px/1.55 Figtree, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     -webkit-text-size-adjust: 100%;
   }
-  .page { max-width: 62rem; margin: 0 auto; padding: calc(28px + env(safe-area-inset-top, 0px)) 16px calc(60px + env(safe-area-inset-bottom, 0px)); }
-  h1, h2, h3 { font-family: "Bricolage Grotesque", Figtree, system-ui, sans-serif; letter-spacing: -0.01em; margin: 0; }
-  h1 { font-size: clamp(1.9rem, 5vw, 2.8rem); font-weight: 800; line-height: 1.08; text-wrap: balance; }
-  .kicker { color: var(--gold); font-weight: 600; font-size: .82rem; letter-spacing: .14em; text-transform: uppercase; margin: 0 0 10px; }
-  .lead { color: var(--mist); font-size: 1.05rem; max-width: 38rem; margin: 12px 0 0; }
+  /* the lodge behind everything, darkened, so the glass has something to blur */
+  .backdrop {
+    position: fixed; inset: 0; z-index: -1;
+    background:
+      radial-gradient(80% 60% at 85% 0%, rgba(224, 166, 78, 0.16), transparent 60%),
+      linear-gradient(180deg, rgba(14, 18, 20, 0.55) 0%, rgba(14, 18, 20, 0.82) 55%, rgba(14, 18, 20, 0.96) 100%),
+      url("hero.jpg") center 30% / cover no-repeat;
+  }
+  .page { max-width: 64rem; margin: 0 auto; padding: calc(18px + env(safe-area-inset-top, 0px)) 16px calc(48px + env(safe-area-inset-bottom, 0px)); }
+
+  /* glass: dark, see-through, a soft top gloss */
+  .glass {
+    position: relative; background: linear-gradient(180deg, var(--glass-2), var(--glass));
+    border: 1px solid var(--edge); border-radius: 20px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 18px 40px rgba(0, 0, 0, 0.35);
+    backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+  }
+  .glass::before {
+    content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0) 38%);
+  }
+
+  h1, h2, h3 { font-family: "Bricolage Grotesque", Figtree, system-ui, sans-serif; letter-spacing: -0.015em; margin: 0; }
   a { color: var(--gold); }
 
-  /* ---- the three options ---- */
-  .options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 30px 0 22px; }
-  @media (max-width: 640px) { .options { grid-template-columns: 1fr; } }
+  /* ---- top bar ---- */
+  .bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 14px; border-radius: 16px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: .02em; }
+  .brand .mark { width: 30px; height: 30px; border-radius: 9px; background: var(--gold-grad); display: grid; place-items: center; color: #1a1408; }
+  .brand .mark svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .brand small { display: block; color: var(--mist); font-weight: 500; font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; cursor: pointer;
+    font: 700 .95rem/1 Figtree, system-ui, sans-serif; border-radius: 12px; padding: 12px 18px; border: 1px solid transparent;
+    transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+  }
+  .btn-gold { background: var(--gold-grad); color: #1a1408; box-shadow: 0 8px 22px rgba(201, 135, 59, 0.35); }
+  .btn-gold:hover { transform: translateY(-1px); box-shadow: 0 12px 28px rgba(201, 135, 59, 0.45); }
+  .btn-glass { background: rgba(243, 241, 234, 0.06); color: var(--ink); border-color: var(--edge); }
+  .btn-glass:hover { background: rgba(243, 241, 234, 0.12); }
+  .btn:focus-visible, .opt:focus-visible { outline: 2.5px solid var(--gold); outline-offset: 2px; }
+  .bar .btn { padding: 9px 14px; font-size: .88rem; }
+
+  /* ---- hero ---- */
+  .hero { margin: 16vh 0 0; padding: 28px 24px; max-width: 40rem; }
+  @media (max-width: 640px) { .hero { margin-top: 12vh; padding: 22px 18px; } }
+  .kicker { display: inline-flex; align-items: center; gap: 8px; margin: 0 0 12px; color: var(--gold); font-weight: 700; font-size: .78rem; letter-spacing: .16em; text-transform: uppercase; }
+  .kicker::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--oak); box-shadow: 0 0 10px var(--oak); }
+  .hero h1 { font-size: clamp(2rem, 6vw, 3.2rem); font-weight: 800; line-height: 1.04; text-wrap: balance; }
+  .hero h1 em { font-style: normal; background: var(--gold-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero p { color: #d4dadb; font-size: 1.05rem; margin: 14px 0 0; max-width: 34rem; }
+  .hero .cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+
+  /* ---- services ---- */
+  .services { scroll-margin-top: 16px; margin-top: 15vh; }
+  .section-title { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 0 4px 14px; }
+  .section-title h2 { font-size: 1.5rem; }
+  .section-title span { color: var(--mist); font-size: .9rem; }
+  .options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  @media (max-width: 720px) { .options { grid-template-columns: 1fr; } }
   .opt {
     display: flex; gap: 14px; align-items: center; text-align: left; cursor: pointer; width: 100%;
-    background: var(--panel); color: var(--ink); border: 1.5px solid var(--edge); border-radius: 16px;
-    padding: 16px; font: inherit; transition: border-color .15s ease, background .15s ease;
+    color: var(--ink); font: inherit; padding: 16px; border-radius: 18px;
+    transition: border-color .2s ease, box-shadow .2s ease, transform .15s ease;
   }
-  .opt:hover { border-color: var(--gold); }
-  .opt[aria-selected="true"] { border-color: var(--gold); background: var(--gold-soft); }
-  .opt:focus-visible { outline: 2.5px solid var(--gold); outline-offset: 2px; }
-  .opt .ic { flex: none; width: 46px; height: 46px; border-radius: 12px; display: grid; place-items: center; background: var(--panel-2); color: var(--gold); }
-  .opt[aria-selected="true"] .ic { background: var(--gold); color: #14191b; }
+  .opt:hover { border-color: var(--gold-line); transform: translateY(-1px); }
+  .opt[aria-selected="true"] {
+    border-color: var(--gold-line);
+    background: linear-gradient(180deg, rgba(201, 135, 59, 0.24), rgba(24, 30, 33, 0.6));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 0 0 1px rgba(201, 135, 59, 0.25), 0 14px 34px rgba(201, 135, 59, 0.18);
+  }
+  .opt .ic { flex: none; width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; color: var(--gold); background: rgba(243, 241, 234, 0.06); border: 1px solid var(--edge); }
+  .opt[aria-selected="true"] .ic { background: var(--gold-grad); color: #1a1408; border-color: transparent; }
   .opt svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
   .opt b { display: block; font-family: "Bricolage Grotesque", Figtree, sans-serif; font-size: 1.08rem; }
   .opt small { color: var(--mist); font-size: .86rem; }
+  .opt[aria-selected="true"] small { color: #ffe2bb; }
 
-  /* ---- selected service ---- */
-  .detail { background: var(--panel); border: 1px solid var(--edge); border-radius: 18px; padding: 22px; }
-  .detail h2 { font-size: 1.5rem; }
-  .detail .blurb { color: var(--mist); margin: 8px 0 0; max-width: 40rem; }
+  .detail { margin-top: 14px; padding: 24px; }
+  @media (max-width: 640px) { .detail { padding: 20px 16px; } }
+  .detail-in { animation: rise .35s ease both; }
+  @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .detail h2 { font-size: 1.6rem; }
+  .detail .blurb { color: #c9d1d3; margin: 8px 0 0; max-width: 42rem; }
   .points { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 16px 0 0; }
-  .points li { background: var(--panel-2); border-radius: 999px; padding: 6px 12px; font-size: .88rem; }
-  .price { margin: 14px 0 0; font-weight: 600; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin-top: 20px; }
-  .work { background: var(--panel-2); border: 1px solid var(--edge); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; }
-  .work .thumb { aspect-ratio: 16 / 10; background: #0e1213 center / cover no-repeat; }
-  .work .body { padding: 14px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
-  .work h3 { font-size: 1.05rem; }
-  .work p { margin: 0; color: var(--mist); font-size: .9rem; }
-  .work a.go { margin-top: auto; align-self: flex-start; font-weight: 600; text-decoration: none; }
-  .work a.go:hover { text-decoration: underline; }
-  .empty { border: 1.5px dashed var(--edge); border-radius: 14px; padding: 26px 18px; text-align: center; color: var(--mist); margin-top: 20px; }
-  .empty b { display: block; color: var(--ink); margin-bottom: 4px; }
-  .ask {
-    display: inline-block; margin-top: 20px; background: var(--gold); color: #14191b; font-weight: 700; text-decoration: none;
-    border-radius: 12px; padding: 12px 18px;
+  .points li { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--gold-line); background: var(--gold-soft); color: #ffe2bb; border-radius: 999px; padding: 6px 12px; font-size: .88rem; }
+  .points li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+  .price { margin: 16px 0 0; font-weight: 700; color: var(--gold); }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 14px; margin-top: 22px; }
+  .work {
+    position: relative; display: flex; flex-direction: column; overflow: hidden; border-radius: 16px; text-decoration: none; color: inherit;
+    background: rgba(243, 241, 234, 0.04); border: 1px solid var(--edge);
+    transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease;
   }
-  .ask:focus-visible { outline: 2.5px solid var(--ink); outline-offset: 2px; }
-  footer { margin-top: 28px; color: var(--mist); font-size: .9rem; }
+  .work:hover { border-color: var(--gold-line); transform: translateY(-2px); box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4); }
+  .work .thumb { position: relative; aspect-ratio: 16 / 10; background: #0e1213 center / cover no-repeat; }
+  .work .thumb::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, rgba(14, 18, 20, 0.65)); }
+  .work .tag {
+    position: absolute; left: 10px; top: 10px; z-index: 1; font-size: .74rem; font-weight: 700; letter-spacing: .06em;
+    color: #1a1408; background: var(--gold-grad); border-radius: 999px; padding: 4px 9px;
+  }
+  .work .body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+  .work h3 { font-size: 1.08rem; }
+  .work p { margin: 0; color: var(--mist); font-size: .9rem; }
+  .work .go { margin-top: 6px; color: var(--gold); font-weight: 700; }
+  .empty {
+    margin-top: 22px; border: 1.5px dashed rgba(201, 135, 59, 0.4); border-radius: 16px; padding: 26px 18px; text-align: center;
+    color: var(--mist); background: rgba(201, 135, 59, 0.05);
+  }
+  .empty b { display: block; color: var(--ink); margin-bottom: 4px; }
+  .detail .ask { margin-top: 22px; }
+
+  footer { margin-top: 18px; padding: 16px 18px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; color: var(--mist); font-size: .9rem; border-radius: 16px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .detail-in { animation: none; }
+    .btn, .opt, .work { transition: none; }
+  }
 </style>
 </head>
 <body>
+<div class="backdrop" aria-hidden="true"></div>
 <div class="page">
-  <header>
+
+  <nav class="bar glass" aria-label="Top">
+    <div class="brand">
+      <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 3 8l9 5 9-5-9-5z"/><path d="m3 13 9 5 9-5"/></svg></span>
+      <span>3D &middot; Video &middot; Web<small>Kerry, Ireland</small></span>
+    </div>
+    <a class="btn btn-glass" href="mailto:irish3dvendor@gmail.com">Email</a>
+  </nav>
+
+  <header class="hero glass">
     <p class="kicker">Kerry, Ireland</p>
-    <h1>Virtual tours, video edits &amp; websites</h1>
-    <p class="lead">For holiday homes and small businesses: show guests around before they book, get noticed on
-    social media, and have a website that works on every phone.</p>
+    <h1>Virtual tours, video edits <em>&amp; websites</em></h1>
+    <p>For holiday homes and small businesses: show guests around before they book, get noticed on social media, and
+    have a website that works on every phone.</p>
+    <div class="cta">
+      <a class="btn btn-gold" href="#services">See the work</a>
+      <a class="btn btn-glass" href="mailto:irish3dvendor@gmail.com?subject=Enquiry">Get a quote</a>
+    </div>
   </header>
 
-  <div class="options" role="tablist" aria-label="Services">
-    <button class="opt" role="tab" id="tab-tours" data-s="tours" aria-selected="true" aria-controls="detail">
-      <span class="ic"><svg viewBox="0 0 24 24"><path d="M3 10.5 12 4l9 6.5"/><path d="M5.5 9v10h13V9"/><path d="M10 19v-5h4v5"/></svg></span>
-      <span><b>Property virtual tours</b><small>Walk round it in 3D</small></span>
-    </button>
-    <button class="opt" role="tab" id="tab-video" data-s="video" aria-selected="false" aria-controls="detail">
-      <span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/></svg></span>
-      <span><b>Video edits</b><small>Reels, promos, ads</small></span>
-    </button>
-    <button class="opt" role="tab" id="tab-web" data-s="web" aria-selected="false" aria-controls="detail">
-      <span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M7 6.5h.01M10 6.5h.01"/></svg></span>
-      <span><b>Website creation</b><small>Fast, simple, mobile</small></span>
-    </button>
-  </div>
+  <section class="services" id="services" aria-labelledby="services-h">
+    <div class="section-title"><h2 id="services-h">What I do</h2><span>Tap one to see the work</span></div>
 
-  <section class="detail" id="detail" role="tabpanel" aria-live="polite"></section>
+    <div class="options" role="tablist" aria-label="Services">
+      <button class="opt glass" role="tab" id="tab-tours" data-s="tours" aria-selected="true" aria-controls="detail">
+        <span class="ic"><svg viewBox="0 0 24 24"><path d="M3 10.5 12 4l9 6.5"/><path d="M5.5 9v10h13V9"/><path d="M10 19v-5h4v5"/></svg></span>
+        <span><b>Property virtual tours</b><small>Walk round it in 3D</small></span>
+      </button>
+      <button class="opt glass" role="tab" id="tab-video" data-s="video" aria-selected="false" aria-controls="detail">
+        <span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/></svg></span>
+        <span><b>Video edits</b><small>Reels, promos, ads</small></span>
+      </button>
+      <button class="opt glass" role="tab" id="tab-web" data-s="web" aria-selected="false" aria-controls="detail">
+        <span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M7 6.5h.01M10 6.5h.01"/></svg></span>
+        <span><b>Website creation</b><small>Fast, simple, mobile</small></span>
+      </button>
+    </div>
 
-  <footer>Email <a href="mailto:irish3dvendor@gmail.com">irish3dvendor@gmail.com</a></footer>
+    <div class="detail glass" id="detail" role="tabpanel" aria-live="polite"></div>
+  </section>
+
+  <footer class="glass">
+    <span>Email <a href="mailto:irish3dvendor@gmail.com">irish3dvendor@gmail.com</a></span>
+    <span>Kerry, Ireland</span>
+  </footer>
 </div>
 
 <script>
@@ -119,21 +220,24 @@
       blurb: 'A 3D walkthrough guests explore on their phone or computer before they book. It is rebuilt from your photos, so there is no visit and no disruption to your bookings.',
       points: ['Room to room, inside and out', 'Works on any phone or computer', 'A link for your website, socials and guest messages'],
       price: 'From EUR 200 for a holiday home. Larger places quoted.',
-      empty: 'A sample walkthrough is available on request.'
+      empty: 'A sample walkthrough is available on request.',
+      tag: '3D tour'
     },
     video: {
       title: 'Video edits',
       blurb: 'Short, punchy edits for social media and your website: property promos, reels and ads, cut to the beat.',
       points: ['Reels and TikToks', 'Captions and colour grading', 'Property promo videos'],
       price: 'Priced per video. Ask for a quote.',
-      empty: 'Examples coming soon. Email for samples.'
+      empty: 'Examples coming soon. Email for samples.',
+      tag: 'Video'
     },
     web: {
       title: 'Website creation',
       blurb: 'Simple, fast websites for holiday homes and small businesses that look right on every phone.',
       points: ['Mobile-first and quick to load', 'Enquiry form', 'Hosting set up for you'],
       price: 'Priced per site. Ask for a quote.',
-      empty: 'Examples coming soon. Email for samples.'
+      empty: 'Examples coming soon. Email for samples.',
+      tag: 'Website'
     }
   };
 
@@ -151,23 +255,27 @@
     if (!SERVICES[id]) id = 'tours';
     var s = SERVICES[id];
     document.querySelectorAll('.opt').forEach(function (b) { b.setAttribute('aria-selected', String(b.dataset.s === id)); });
-    document.getElementById('detail').setAttribute('aria-labelledby', 'tab-' + id);
+    var panel = document.getElementById('detail');
+    panel.setAttribute('aria-labelledby', 'tab-' + id);
     var items = WORK.filter(function (w) { return w.type === id && w.show; });
     var subject = encodeURIComponent(s.title + ' enquiry');
-    document.getElementById('detail').innerHTML =
+    panel.innerHTML = '<div class="detail-in">' +
       '<h2>' + esc(s.title) + '</h2>' +
       '<p class="blurb">' + esc(s.blurb) + '</p>' +
       '<ul class="points">' + s.points.map(function (p) { return '<li>' + esc(p) + '</li>'; }).join('') + '</ul>' +
       '<p class="price">' + esc(s.price).replace('EUR ', '&euro;') + '</p>' +
       (items.length
         ? '<div class="grid">' + items.map(function (w) {
-            return '<article class="work"><div class="thumb"' + (w.thumb ? ' style="background-image:url(' + esc(w.thumb) + ')"' : '') + '></div>' +
+            var inner = '<div class="thumb"' + (w.thumb ? ' style="background-image:url(' + esc(w.thumb) + ')"' : '') + '><span class="tag">' + esc(s.tag) + '</span></div>' +
               '<div class="body"><h3>' + esc(w.title) + '</h3><p>' + esc(w.text) + '</p>' +
-              (w.link ? '<a class="go" href="' + esc(w.link) + '" target="_blank" rel="noopener">' + esc(w.cta || 'View') + ' &rarr;</a>' : '') +
-              '</div></article>';
+              (w.link ? '<span class="go">' + esc(w.cta || 'View') + ' &rarr;</span>' : '') + '</div>';
+            return w.link
+              ? '<a class="work" href="' + esc(w.link) + '" target="_blank" rel="noopener">' + inner + '</a>'
+              : '<article class="work">' + inner + '</article>';
           }).join('') + '</div>'
         : '<div class="empty"><b>' + esc(s.empty) + '</b>Tap below to ask.</div>') +
-      '<a class="ask" href="mailto:' + EMAIL + '?subject=' + subject + '">Ask about ' + esc(s.title.toLowerCase()) + '</a>';
+      '<a class="btn btn-gold ask" href="mailto:' + EMAIL + '?subject=' + subject + '">Ask about ' + esc(s.title.toLowerCase()) + '</a>' +
+      '</div>';
     if (location.hash !== '#' + id) history.replaceState(null, '', '#' + id);
   }
 
@@ -182,7 +290,10 @@
     var next = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
     next.focus(); show(next.dataset.s);
   });
-  show((location.hash || '#tours').slice(1));
+  var start = (location.hash || '').slice(1);
+  show(SERVICES[start] ? start : 'tours');
+  // opened on a service link (#tours, #video, #web): jump straight to it
+  if (SERVICES[start]) document.getElementById('services').scrollIntoView();
 </script>
 </body>
 </html>
