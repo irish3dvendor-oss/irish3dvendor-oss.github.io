@@ -140,8 +140,9 @@
   // The work shown under each service. show: false keeps an item hidden -- for anything the owner hasn't agreed
   // to show yet. thumb is an optional image path.
   var WORK = [
-    { type: 'tours', title: 'Holiday lodge, Co. Kerry', text: 'Two bedrooms, garden and drive: walk the whole place.',
-      link: 'https://irish3dvendor-oss.github.io/croughmore-lodge-3d/', cta: 'Walk through it', thumb: '', show: false }  // waiting for the owner's OK
+    // shown unnamed (the /sample/ copy) until the owner agrees; the named tour is the one sent to them
+    { type: 'tours', title: 'Holiday lodge, Co. Kerry', text: 'Two bedrooms, garden and drive. Walk the whole place, inside and out.',
+      link: 'https://irish3dvendor-oss.github.io/croughmore-lodge-3d/sample/', cta: 'Walk through it', thumb: 'lodge.jpg', show: true }
   ];
 
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
