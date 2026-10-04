@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Virtual tours, video edits &amp; websites</title>
+<meta name="description" content="3D property walkthroughs, video edits and websites for holiday homes and small businesses in Kerry.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600&display=swap">
+<!--
+  Portfolio: three services; tap one to see its work. Add work in the WORK list near the bottom
+  (type: 'tours' | 'video' | 'web'). An item with show: false stays hidden -- use that for anything the
+  owner hasn't agreed to show yet.
+-->
+<style>
+  :root {
+    --bg: #14191b; --panel: #1d2427; --panel-2: #242c30; --edge: rgba(243, 241, 234, 0.10);
+    --ink: #f3f1ea; --mist: #aab5b8; --gold: #e0a64e; --gold-soft: rgba(224, 166, 78, 0.14);
+    color-scheme: dark;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f5f3ee; --panel: #ffffff; --panel-2: #f0ede6; --edge: rgba(20, 25, 27, 0.10);
+      --ink: #15191a; --mist: #5c6764; --gold: #a8690f; --gold-soft: rgba(168, 105, 15, 0.10);
+      color-scheme: light;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.55 Figtree, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    -webkit-text-size-adjust: 100%;
+  }
+  .page { max-width: 62rem; margin: 0 auto; padding: calc(28px + env(safe-area-inset-top, 0px)) 16px calc(60px + env(safe-area-inset-bottom, 0px)); }
+  h1, h2, h3 { font-family: "Bricolage Grotesque", Figtree, system-ui, sans-serif; letter-spacing: -0.01em; margin: 0; }
+  h1 { font-size: clamp(1.9rem, 5vw, 2.8rem); font-weight: 800; line-height: 1.08; text-wrap: balance; }
+  .kicker { color: var(--gold); font-weight: 600; font-size: .82rem; letter-spacing: .14em; text-transform: uppercase; margin: 0 0 10px; }
+  .lead { color: var(--mist); font-size: 1.05rem; max-width: 38rem; margin: 12px 0 0; }
+  a { color: var(--gold); }
+
+  /* ---- the three options ---- */
+  .options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 30px 0 22px; }
+  @media (max-width: 640px) { .options { grid-template-columns: 1fr; } }
+  .opt {
+    display: flex; gap: 14px; align-items: center; text-align: left; cursor: pointer; width: 100%;
+    background: var(--panel); color: var(--ink); border: 1.5px solid var(--edge); border-radius: 16px;
+    padding: 16px; font: inherit; transition: border-color .15s ease, background .15s ease;
+  }
+  .opt:hover { border-color: var(--gold); }
+  .opt[aria-selected="true"] { border-color: var(--gold); background: var(--gold-soft); }
+  .opt:focus-visible { outline: 2.5px solid var(--gold); outline-offset: 2px; }
+  .opt .ic { flex: none; width: 46px; height: 46px; border-radius: 12px; display: grid; place-items: center; background: var(--panel-2); color: var(--gold); }
+  .opt[aria-selected="true"] .ic { background: var(--gold); color: #14191b; }
+  .opt svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .opt b { display: block; font-family: "Bricolage Grotesque", Figtree, sans-serif; font-size: 1.08rem; }
+  .opt small { color: var(--mist); font-size: .86rem; }
+
+  /* ---- selected service ---- */
+  .detail { background: var(--panel); border: 1px solid var(--edge); border-radius: 18px; padding: 22px; }
+  .detail h2 { font-size: 1.5rem; }
+  .detail .blurb { color: var(--mist); margin: 8px 0 0; max-width: 40rem; }
+  .points { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 16px 0 0; }
+  .points li { background: var(--panel-2); border-radius: 999px; padding: 6px 12px; font-size: .88rem; }
+  .price { margin: 14px 0 0; font-weight: 600; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin-top: 20px; }
+  .work { background: var(--panel-2); border: 1px solid var(--edge); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; }
+  .work .thumb { aspect-ratio: 16 / 10; background: #0e1213 center / cover no-repeat; }
+  .work .body { padding: 14px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+  .work h3 { font-size: 1.05rem; }
+  .work p { margin: 0; color: var(--mist); font-size: .9rem; }
+  .work a.go { margin-top: auto; align-self: flex-start; font-weight: 600; text-decoration: none; }
+  .work a.go:hover { text-decoration: underline; }
+  .empty { border: 1.5px dashed var(--edge); border-radius: 14px; padding: 26px 18px; text-align: center; color: var(--mist); margin-top: 20px; }
+  .empty b { display: block; color: var(--ink); margin-bottom: 4px; }
+  .ask {
+    display: inline-block; margin-top: 20px; background: var(--gold); color: #14191b; font-weight: 700; text-decoration: none;
+    border-radius: 12px; padding: 12px 18px;
+  }
+  .ask:focus-visible { outline: 2.5px solid var(--ink); outline-offset: 2px; }
+  footer { margin-top: 28px; color: var(--mist); font-size: .9rem; }
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <p class="kicker">Kerry, Ireland</p>
+    <h1>Virtual tours, video edits &amp; websites</h1>
+    <p class="lead">For holiday homes and small businesses: show guests around before they book, get noticed on
+    social media, and have a website that works on every phone.</p>
+  </header>
+
+  <div class="options" role="tablist" aria-label="Services">
+    <button class="opt" role="tab" id="tab-tours" data-s="tours" aria-selected="true" aria-controls="detail">
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="M3 10.5 12 4l9 6.5"/><path d="M5.5 9v10h13V9"/><path d="M10 19v-5h4v5"/></svg></span>
+      <span><b>Property virtual tours</b><small>Walk round it in 3D</small></span>
+    </button>
+    <button class="opt" role="tab" id="tab-video" data-s="video" aria-selected="false" aria-controls="detail">
+      <span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/></svg></span>
+      <span><b>Video edits</b><small>Reels, promos, ads</small></span>
+    </button>
+    <button class="opt" role="tab" id="tab-web" data-s="web" aria-selected="false" aria-controls="detail">
+      <span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M7 6.5h.01M10 6.5h.01"/></svg></span>
+      <span><b>Website creation</b><small>Fast, simple, mobile</small></span>
+    </button>
+  </div>
+
+  <section class="detail" id="detail" role="tabpanel" aria-live="polite"></section>
+
+  <footer>Email <a href="mailto:irish3dvendor@gmail.com">irish3dvendor@gmail.com</a></footer>
+</div>
+
+<script>
+  var EMAIL = 'irish3dvendor@gmail.com';
+
+  var SERVICES = {
+    tours: {
+      title: 'Property virtual tours',
+      blurb: 'A 3D walkthrough guests explore on their phone or computer before they book. It is rebuilt from your photos, so there is no visit and no disruption to your bookings.',
+      points: ['Room to room, inside and out', 'Works on any phone or computer', 'A link for your website, socials and guest messages'],
+      price: 'From EUR 200 for a holiday home. Larger places quoted.',
+      empty: 'A sample walkthrough is available on request.'
+    },
+    video: {
+      title: 'Video edits',
+      blurb: 'Short, punchy edits for social media and your website: property promos, reels and ads, cut to the beat.',
+      points: ['Reels and TikToks', 'Captions and colour grading', 'Property promo videos'],
+      price: 'Priced per video. Ask for a quote.',
+      empty: 'Examples coming soon. Email for samples.'
+    },
+    web: {
+      title: 'Website creation',
+      blurb: 'Simple, fast websites for holiday homes and small businesses that look right on every phone.',
+      points: ['Mobile-first and quick to load', 'Enquiry form', 'Hosting set up for you'],
+      price: 'Priced per site. Ask for a quote.',
+      empty: 'Examples coming soon. Email for samples.'
+    }
+  };
+
+  // The work shown under each service. show: false keeps an item hidden -- for anything the owner hasn't agreed
+  // to show yet. thumb is an optional image path.
+  var WORK = [
+    { type: 'tours', title: 'Holiday lodge, Co. Kerry', text: 'Two bedrooms, garden and drive: walk the whole place.',
+      link: 'https://irish3dvendor-oss.github.io/croughmore-lodge-3d/', cta: 'Walk through it', thumb: '', show: false }  // waiting for the owner's OK
+  ];
+
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+  function show(id) {
+    if (!SERVICES[id]) id = 'tours';
+    var s = SERVICES[id];
+    document.querySelectorAll('.opt').forEach(function (b) { b.setAttribute('aria-selected', String(b.dataset.s === id)); });
+    document.getElementById('detail').setAttribute('aria-labelledby', 'tab-' + id);
+    var items = WORK.filter(function (w) { return w.type === id && w.show; });
+    var subject = encodeURIComponent(s.title + ' enquiry');
+    document.getElementById('detail').innerHTML =
+      '<h2>' + esc(s.title) + '</h2>' +
+      '<p class="blurb">' + esc(s.blurb) + '</p>' +
+      '<ul class="points">' + s.points.map(function (p) { return '<li>' + esc(p) + '</li>'; }).join('') + '</ul>' +
+      '<p class="price">' + esc(s.price).replace('EUR ', '&euro;') + '</p>' +
+      (items.length
+        ? '<div class="grid">' + items.map(function (w) {
+            return '<article class="work"><div class="thumb"' + (w.thumb ? ' style="background-image:url(' + esc(w.thumb) + ')"' : '') + '></div>' +
+              '<div class="body"><h3>' + esc(w.title) + '</h3><p>' + esc(w.text) + '</p>' +
+              (w.link ? '<a class="go" href="' + esc(w.link) + '" target="_blank" rel="noopener">' + esc(w.cta || 'View') + ' &rarr;</a>' : '') +
+              '</div></article>';
+          }).join('') + '</div>'
+        : '<div class="empty"><b>' + esc(s.empty) + '</b>Tap below to ask.</div>') +
+      '<a class="ask" href="mailto:' + EMAIL + '?subject=' + subject + '">Ask about ' + esc(s.title.toLowerCase()) + '</a>';
+    if (location.hash !== '#' + id) history.replaceState(null, '', '#' + id);
+  }
+
+  document.querySelector('.options').addEventListener('click', function (e) {
+    var b = e.target.closest('.opt'); if (b) show(b.dataset.s);
+  });
+  // arrow keys move between the three options
+  document.querySelector('.options').addEventListener('keydown', function (e) {
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    var tabs = [].slice.call(document.querySelectorAll('.opt'));
+    var i = tabs.indexOf(document.activeElement); if (i < 0) return;
+    var next = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+    next.focus(); show(next.dataset.s);
+  });
+  show((location.hash || '#tours').slice(1));
+</script>
+</body>
+</html>
