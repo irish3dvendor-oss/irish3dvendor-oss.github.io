@@ -10,10 +10,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
 <!--
-  Portfolio, in the walkthrough's look: dark see-through glass panels with gold accents over a backdrop of
-  the lodge. Three services; tap one to see its work.
-  Add work in the WORK list near the bottom (type: 'tours' | 'video' | 'web'). An item with show: false stays
-  hidden -- use that for anything the owner hasn't agreed to show yet.
+  Portfolio, in the walkthrough's look: dark see-through glass panels with gold accents, everything centred,
+  over a backdrop that fades between 3D renders.
+  - Work: add to the WORK list near the bottom (type: 'tours' | 'video' | 'web'). show: false keeps an item
+    hidden -- for anything the owner hasn't agreed to show yet.
+  - Backdrop: add each new tour's best views to BACKGROUNDS (bg/ folder, about 1600x900 JPG, panels hidden
+    with the tour's eye button).
+  - No prices on the page on purpose: every job is quoted.
 -->
 <style>
   :root {
@@ -26,7 +29,6 @@
     --mist: #aab5b8;
     --oak: #c9873b;
     --gold: #f1c27d;
-    --gold-soft: rgba(201, 135, 59, 0.22);
     --gold-line: rgba(201, 135, 59, 0.55);
     --gold-grad: linear-gradient(135deg, #f6d29a 0%, #e0a64e 45%, #c9873b 100%);
     --blur: blur(16px) saturate(1.25);
@@ -35,17 +37,20 @@
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
   body {
-    margin: 0; color: var(--ink); background: var(--slate);
+    margin: 0; color: var(--ink); background: var(--slate); text-align: center;
     font: 16px/1.55 Figtree, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     -webkit-text-size-adjust: 100%;
   }
-  /* the lodge behind everything, darkened, so the glass has something to blur */
-  .backdrop {
-    position: fixed; inset: 0; z-index: -1;
+
+  /* backdrop: 3D renders fading one into the next, darkened so the glass has something to blur */
+  .backdrop { position: fixed; inset: 0; z-index: -1; background: var(--slate); }
+  .backdrop .bg { position: absolute; inset: 0; background: center 35% / cover no-repeat; opacity: 0; transition: opacity 2.2s ease; }
+  .backdrop .bg.on { opacity: 1; }
+  .backdrop::after {
+    content: ""; position: absolute; inset: 0;
     background:
-      radial-gradient(80% 60% at 85% 0%, rgba(224, 166, 78, 0.16), transparent 60%),
-      linear-gradient(180deg, rgba(14, 18, 20, 0.55) 0%, rgba(14, 18, 20, 0.82) 55%, rgba(14, 18, 20, 0.96) 100%),
-      url("hero.jpg") center 30% / cover no-repeat;
+      radial-gradient(70% 55% at 50% 0%, rgba(224, 166, 78, 0.14), transparent 60%),
+      linear-gradient(180deg, rgba(14, 18, 20, 0.5) 0%, rgba(14, 18, 20, 0.8) 55%, rgba(14, 18, 20, 0.95) 100%);
   }
   .page { max-width: 64rem; margin: 0 auto; padding: calc(18px + env(safe-area-inset-top, 0px)) 16px calc(48px + env(safe-area-inset-bottom, 0px)); }
 
@@ -65,8 +70,8 @@
   a { color: var(--gold); }
 
   /* ---- top bar ---- */
-  .bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 14px; border-radius: 16px; }
-  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: .02em; }
+  .bar { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; padding: 10px 14px; border-radius: 16px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: .02em; text-align: left; }
   .brand .mark { width: 30px; height: 30px; border-radius: 9px; background: var(--gold-grad); display: grid; place-items: center; color: #1a1408; }
   .brand .mark svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
   .brand small { display: block; color: var(--mist); font-weight: 500; font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; }
@@ -83,52 +88,53 @@
   .bar .btn { padding: 9px 14px; font-size: .88rem; }
 
   /* ---- hero ---- */
-  .hero { margin: 16vh 0 0; padding: 28px 24px; max-width: 40rem; }
-  @media (max-width: 640px) { .hero { margin-top: 12vh; padding: 22px 18px; } }
+  .hero { margin: 16vh auto 0; padding: 30px 26px; max-width: 42rem; }
+  @media (max-width: 640px) { .hero { margin-top: 12vh; padding: 24px 18px; } }
   .kicker { display: inline-flex; align-items: center; gap: 8px; margin: 0 0 12px; color: var(--gold); font-weight: 700; font-size: .78rem; letter-spacing: .16em; text-transform: uppercase; }
   .kicker::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--oak); box-shadow: 0 0 10px var(--oak); }
   .hero h1 { font-size: clamp(2rem, 6vw, 3.2rem); font-weight: 800; line-height: 1.04; text-wrap: balance; }
   .hero h1 em { font-style: normal; background: var(--gold-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  .hero p { color: #d4dadb; font-size: 1.05rem; margin: 14px 0 0; max-width: 34rem; }
-  .hero .cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+  .hero p { color: #d4dadb; font-size: 1.05rem; margin: 14px auto 0; max-width: 34rem; }
+  .hero .cta { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 22px; }
 
   /* ---- services ---- */
   .services { scroll-margin-top: 16px; margin-top: 15vh; }
-  .section-title { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 0 4px 14px; }
-  .section-title h2 { font-size: 1.5rem; }
-  .section-title span { color: var(--mist); font-size: .9rem; }
+  .section-title { margin: 0 0 16px; }
+  .section-title h2 { font-size: 1.6rem; }
+  .section-title span { display: block; color: var(--mist); font-size: .9rem; margin-top: 2px; }
   .options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
   @media (max-width: 720px) { .options { grid-template-columns: 1fr; } }
   .opt {
-    display: flex; gap: 14px; align-items: center; text-align: left; cursor: pointer; width: 100%;
-    color: var(--ink); font: inherit; padding: 16px; border-radius: 18px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center;
+    cursor: pointer; width: 100%; color: var(--ink); font: inherit; padding: 18px 14px; border-radius: 18px;
     transition: border-color .2s ease, box-shadow .2s ease, transform .15s ease;
   }
+  @media (max-width: 720px) { .opt { gap: 8px; padding: 14px; } .opt .ic { width: 42px; height: 42px; } }
   .opt:hover { border-color: var(--gold-line); transform: translateY(-1px); }
   .opt[aria-selected="true"] {
     border-color: var(--gold-line);
     background: linear-gradient(180deg, rgba(201, 135, 59, 0.24), rgba(24, 30, 33, 0.6));
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 0 0 1px rgba(201, 135, 59, 0.25), 0 14px 34px rgba(201, 135, 59, 0.18);
   }
-  .opt .ic { flex: none; width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; color: var(--gold); background: rgba(243, 241, 234, 0.06); border: 1px solid var(--edge); }
+  .opt .ic { flex: none; width: 50px; height: 50px; border-radius: 14px; display: grid; place-items: center; color: var(--gold); background: rgba(243, 241, 234, 0.06); border: 1px solid var(--edge); }
   .opt[aria-selected="true"] .ic { background: var(--gold-grad); color: #1a1408; border-color: transparent; }
   .opt svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
   .opt b { display: block; font-family: "Bricolage Grotesque", Figtree, sans-serif; font-size: 1.08rem; }
   .opt small { color: var(--mist); font-size: .86rem; }
   .opt[aria-selected="true"] small { color: #ffe2bb; }
 
-  .detail { margin-top: 14px; padding: 24px; }
-  @media (max-width: 640px) { .detail { padding: 20px 16px; } }
+  .detail { margin-top: 14px; padding: 28px 24px; }
+  @media (max-width: 640px) { .detail { padding: 22px 16px; } }
   .detail-in { animation: rise .35s ease both; }
   @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-  .detail h2 { font-size: 1.6rem; }
-  .detail .blurb { color: #c9d1d3; margin: 8px 0 0; max-width: 42rem; }
-  .points { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 16px 0 0; }
-  .points li { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--gold-line); background: var(--gold-soft); color: #ffe2bb; border-radius: 999px; padding: 6px 12px; font-size: .88rem; }
-  .points li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
-  .price { margin: 16px 0 0; font-weight: 700; color: var(--gold); }
+  .detail h2 { font-size: 1.7rem; }
+  .detail .blurb { color: #c9d1d3; margin: 10px auto 0; max-width: 40rem; }
+  /* what's included: a plain centred list with gold ticks */
+  .points { list-style: none; padding: 0; margin: 18px auto 0; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .points li { display: flex; align-items: baseline; gap: 10px; color: #ece7dc; }
+  .points li::before { content: "\2713"; color: var(--gold); font-weight: 800; }
 
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 14px; margin-top: 22px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 320px)); justify-content: center; gap: 14px; margin-top: 24px; }
   .work {
     position: relative; display: flex; flex-direction: column; overflow: hidden; border-radius: 16px; text-decoration: none; color: inherit;
     background: rgba(243, 241, 234, 0.04); border: 1px solid var(--edge);
@@ -138,26 +144,27 @@
   .work .thumb { position: relative; aspect-ratio: 16 / 10; background: #0e1213 center / cover no-repeat; }
   .work .thumb::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, rgba(14, 18, 20, 0.65)); }
   .work .tag {
-    position: absolute; left: 10px; top: 10px; z-index: 1; font-size: .74rem; font-weight: 700; letter-spacing: .06em;
-    color: #1a1408; background: var(--gold-grad); border-radius: 999px; padding: 4px 9px;
+    position: absolute; left: 50%; top: 10px; transform: translateX(-50%); z-index: 1; font-size: .74rem; font-weight: 700; letter-spacing: .06em;
+    color: #1a1408; background: var(--gold-grad); border-radius: 999px; padding: 4px 10px;
   }
-  .work .body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+  .work .body { padding: 14px 16px 18px; display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }
   .work h3 { font-size: 1.08rem; }
   .work p { margin: 0; color: var(--mist); font-size: .9rem; }
   .work .go { margin-top: 6px; color: var(--gold); font-weight: 700; }
   .empty {
-    margin-top: 22px; border: 1.5px dashed rgba(201, 135, 59, 0.4); border-radius: 16px; padding: 26px 18px; text-align: center;
+    margin: 24px auto 0; max-width: 36rem; border: 1.5px dashed rgba(201, 135, 59, 0.4); border-radius: 16px; padding: 26px 18px;
     color: var(--mist); background: rgba(201, 135, 59, 0.05);
   }
   .empty b { display: block; color: var(--ink); margin-bottom: 4px; }
-  .detail .ask { margin-top: 22px; }
+  .detail .ask { margin-top: 24px; }
 
-  footer { margin-top: 18px; padding: 16px 18px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; color: var(--mist); font-size: .9rem; border-radius: 16px; }
+  footer { margin-top: 18px; padding: 16px 18px; color: var(--mist); font-size: .9rem; border-radius: 16px; }
+  footer span { display: block; }
 
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     .detail-in { animation: none; }
-    .btn, .opt, .work { transition: none; }
+    .btn, .opt, .work, .backdrop .bg { transition: none; }
   }
 </style>
 </head>
@@ -214,12 +221,14 @@
 <script>
   var EMAIL = 'irish3dvendor@gmail.com';
 
+  // The backdrop fades from one render to the next. Add each new tour's best views here.
+  var BACKGROUNDS = ['bg/lodge-front.jpg', 'bg/lodge-living.jpg', 'bg/lodge-double.jpg', 'bg/lodge-kitchen.jpg'];
+
   var SERVICES = {
     tours: {
       title: 'Property virtual tours',
       blurb: 'A 3D walkthrough guests explore on their phone or computer before they book. It is rebuilt from your photos, so there is no visit and no disruption to your bookings.',
       points: ['Room to room, inside and out', 'Works on any phone or computer', 'A link for your website, socials and guest messages'],
-      price: 'From EUR 200 for a holiday home. Larger places quoted.',
       empty: 'A sample walkthrough is available on request.',
       tag: '3D tour'
     },
@@ -227,7 +236,6 @@
       title: 'Video edits',
       blurb: 'Short, punchy edits for social media and your website: property promos, reels and ads, cut to the beat.',
       points: ['Reels and TikToks', 'Captions and colour grading', 'Property promo videos'],
-      price: 'Priced per video. Ask for a quote.',
       empty: 'Examples coming soon. Email for samples.',
       tag: 'Video'
     },
@@ -235,7 +243,6 @@
       title: 'Website creation',
       blurb: 'Simple, fast websites for holiday homes and small businesses that look right on every phone.',
       points: ['Mobile-first and quick to load', 'Enquiry form', 'Hosting set up for you'],
-      price: 'Priced per site. Ask for a quote.',
       empty: 'Examples coming soon. Email for samples.',
       tag: 'Website'
     }
@@ -263,7 +270,6 @@
       '<h2>' + esc(s.title) + '</h2>' +
       '<p class="blurb">' + esc(s.blurb) + '</p>' +
       '<ul class="points">' + s.points.map(function (p) { return '<li>' + esc(p) + '</li>'; }).join('') + '</ul>' +
-      '<p class="price">' + esc(s.price).replace('EUR ', '&euro;') + '</p>' +
       (items.length
         ? '<div class="grid">' + items.map(function (w) {
             var inner = '<div class="thumb"' + (w.thumb ? ' style="background-image:url(' + esc(w.thumb) + ')"' : '') + '><span class="tag">' + esc(s.tag) + '</span></div>' +
@@ -278,6 +284,28 @@
       '</div>';
     if (location.hash !== '#' + id) history.replaceState(null, '', '#' + id);
   }
+
+  // backdrop: two layers, the next render fades in over the last (held still if the viewer prefers less motion)
+  (function () {
+    var host = document.querySelector('.backdrop');
+    var layers = [0, 1].map(function () { var d = document.createElement('div'); d.className = 'bg'; host.appendChild(d); return d; });
+    var i = 0, cur = 0;
+    layers[0].style.backgroundImage = 'url("' + BACKGROUNDS[0] + '")';
+    layers[0].classList.add('on');
+    if (BACKGROUNDS.length < 2 || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    setInterval(function () {
+      if (document.hidden) return;
+      i = (i + 1) % BACKGROUNDS.length;
+      var img = new Image();
+      img.onload = function () {
+        var next = 1 - cur;
+        layers[next].style.backgroundImage = 'url("' + BACKGROUNDS[i] + '")';
+        layers[next].classList.add('on'); layers[cur].classList.remove('on');
+        cur = next;
+      };
+      img.src = BACKGROUNDS[i];
+    }, 8000);
+  })();
 
   document.querySelector('.options').addEventListener('click', function (e) {
     var b = e.target.closest('.opt'); if (b) show(b.dataset.s);
