@@ -222,7 +222,8 @@
   var EMAIL = 'irish3dvendor@gmail.com';
 
   // The backdrop fades from one render to the next. Add each new tour's best views here.
-  var BACKGROUNDS = ['bg/lodge-front.jpg', 'bg/lodge-living.jpg', 'bg/lodge-double.jpg', 'bg/lodge-kitchen.jpg'];
+  var BACKGROUNDS = ['bg/lodge-front.jpg', 'bg/cottage-front.jpg', 'bg/lodge-living.jpg', 'bg/cottage-living.jpg',
+                     'bg/lodge-double.jpg', 'bg/cottage-bed1.jpg', 'bg/lodge-kitchen.jpg', 'bg/cottage-kitchen.jpg'];
 
   var SERVICES = {
     tours: {
@@ -253,7 +254,9 @@
   var WORK = [
     // shown unnamed (the /sample/ copy) until the owner agrees; the named tour is the one sent to them
     { type: 'tours', title: 'Holiday lodge, Co. Kerry', text: 'Two bedrooms, garden and drive. Walk the whole place, inside and out.',
-      link: 'https://irish3dvendor-oss.github.io/croughmore-lodge-3d/sample/', cta: 'Walk through it', thumb: 'lodge.jpg', show: true }
+      link: 'https://irish3dvendor-oss.github.io/croughmore-lodge-3d/sample/', cta: 'Walk through it', thumb: 'lodge.jpg', show: true },
+    { type: 'tours', title: 'Seaside cottage, Co. Kerry', text: 'Four bedrooms, sea views and a garden. Walk the whole place, inside and out.',
+      link: 'https://irish3dvendor-oss.github.io/tig-na-mara-3d/sample/', cta: 'Walk through it', thumb: 'cottage.jpg', show: true }
   ];
 
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
