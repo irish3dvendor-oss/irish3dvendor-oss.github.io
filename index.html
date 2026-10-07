@@ -111,14 +111,14 @@
   .points li { padding: 18px 18px 20px; border-left: 1px solid rgba(236, 232, 223, .16); font-size: .92rem; line-height: 1.5; color: #d3d9da; }
   .points li:first-child { border-left: 0; }
   .points b { display: block; margin-bottom: 6px; font: 680 1.02rem/1.25 var(--display); font-stretch: 108%; letter-spacing: -0.01em; color: var(--paper); }
-  .works { max-width: 46rem; margin: 34px auto 0; }
+  .works { max-width: 64rem; margin: 34px auto 0; }
   .soon { max-width: 30rem; }
   .about .btn { margin-top: 26px; }
   .fade { animation: fade .35s ease both; }
   @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 
   /* the work: photo, name, and a drawing-sheet title block */
-  .works { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; align-content: start; }
+  .works { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; align-content: start; }
   .work { display: flex; flex-direction: column; background: rgba(20, 26, 28, .86); border: 1px solid var(--line); border-radius: 14px;
           overflow: hidden; color: inherit; text-decoration: none; transition: border-color .2s ease; }
   .work:hover { border-color: #4b5558; }
@@ -250,7 +250,11 @@
     { src: 'bg/lodge-double.jpg', cap: 'Holiday lodge \u00b7 Double bedroom' },
     { src: 'bg/cottage-bed1.jpg', cap: 'Seaside cottage \u00b7 Bedroom' },
     { src: 'bg/lodge-kitchen.jpg', cap: 'Holiday lodge \u00b7 Kitchen' },
-    { src: 'bg/cottage-kitchen.jpg', cap: 'Seaside cottage \u00b7 Kitchen' }
+    { src: 'bg/cottage-kitchen.jpg', cap: 'Seaside cottage \u00b7 Kitchen' },
+    { src: 'bg/farmhouse-front.jpg', cap: 'Farmhouse \u00b7 Outside' },
+    { src: 'bg/farmhouse-living.jpg', cap: 'Farmhouse \u00b7 Sitting room' },
+    { src: 'bg/farmhouse-kitchen.jpg', cap: 'Farmhouse \u00b7 Kitchen' },
+    { src: 'bg/farmhouse-bed1.jpg', cap: 'Farmhouse \u00b7 Bedroom' }
   ];
   var SLIDE_MS = 7000;           // each build is up for 7 seconds
 
@@ -297,7 +301,10 @@
       meta: [['Rooms', '2 bed'], ['Outside', 'Garden'], ['Where', 'Co. Kerry']] },
     { type: 'tours', title: 'Seaside cottage', link: 'https://irish3dvendor-oss.github.io/tig-na-mara-3d/sample/',
       cta: 'Walk through it', thumb: 'cottage.jpg', show: true,
-      meta: [['Rooms', '4 bed'], ['Outside', 'Sea views'], ['Where', 'Co. Kerry']] }
+      meta: [['Rooms', '4 bed'], ['Outside', 'Sea views'], ['Where', 'Co. Kerry']] },
+    { type: 'tours', title: 'Farmhouse', link: 'https://irish3dvendor-oss.github.io/rowan-house-3d/sample/',
+      cta: 'Walk through it', thumb: 'farmhouse.jpg', show: true,
+      meta: [['Rooms', '4 bed'], ['Outside', 'Garden'], ['Where', 'Co. Kerry']] }
   ];
 
   var IDS = ['tours', 'video', 'web'];
