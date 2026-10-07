@@ -137,6 +137,7 @@
   .soon b { display: block; color: var(--paper); font-weight: 600; margin-bottom: 4px; }
   .dots { display: none; }
   .ask-narrow { margin-top: 30px; }
+  .sticky-ask { display: none; }
 
   footer { border-top: 1px solid rgba(236, 232, 223, .14); }
   footer .wrap { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 28px;
@@ -176,8 +177,13 @@
     .dots { display: flex; justify-content: center; gap: 6px; margin-top: 12px; }
     .dots i { width: 7px; height: 3px; border-radius: 2px; background: var(--line); transition: width .2s ease, background .2s ease; }
     .dots i.on { width: 20px; background: var(--oak); }
-    .ask-narrow { margin-top: 22px; }
-    .ask-narrow .btn { width: 100%; }
+    /* phones: the ask button stays pinned to the bottom of the screen (it follows the chosen service) */
+    .ask-narrow { display: none; }
+    .sticky-ask { display: block; position: fixed; left: 0; right: 0; bottom: 0; z-index: 6;
+                  padding: 14px 18px calc(12px + env(safe-area-inset-bottom, 0px));
+                  background: linear-gradient(180deg, rgba(15, 19, 21, 0) 0%, rgba(15, 19, 21, .88) 45%); }
+    .sticky-ask .btn { width: 100%; box-shadow: 0 10px 26px rgba(0, 0, 0, .45); }
+    body { padding-bottom: 86px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -221,6 +227,8 @@
   </div>
 </main>
 
+
+<div class="sticky-ask" id="stickyAsk"></div>
 
 <footer>
   <div class="wrap">
@@ -326,6 +334,7 @@
       '<div class="about fade"><h3>' + esc(s.title) + '</h3><p>' + esc(s.blurb) + '</p></div>' +
       '<ul class="points fade">' + s.points.map(function (p) { return '<li><b>' + esc(p[0].replace(/\.$/, '')) + '</b>' + esc(p[1]) + '</li>'; }).join('') + '</ul>' +
       '<div class="fade">' + works + '<div class="ask-narrow">' + ask + '</div></div>';
+    document.getElementById('stickyAsk').innerHTML = ask;
     // phones: the carousel's dots follow the swipe
     var grid = panel.querySelector('.works'), dots = panel.querySelectorAll('.dots i');
     if (grid && dots.length) grid.addEventListener('scroll', function () {
