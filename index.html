@@ -120,15 +120,23 @@
 
   /* the work: photo, name, and a drawing-sheet title block; three across, a shorter last row stays centred */
   .works { display: flex; flex-wrap: wrap; justify-content: center; gap: 18px; }
-  /* four or more: one row of four, a little wider than the text column */
-  .works.four { width: min(76rem, calc(100vw - 48px)); max-width: none; position: relative; left: 50%; transform: translateX(-50%); }
-  .works.four .work { flex-basis: calc((100% - 54px) / 4); }
-  .works.four .tb div { padding: 7px 7px; }
-  .works.four .tb dd { font-size: .76rem; }
-  @media (max-width: 1180px) and (min-width: 761px) {
-    .works.four { width: 100%; left: 0; transform: none; }
-    .works.four .work { flex-basis: calc((100% - 18px) / 2); }
-  }
+  /* more than one piece: a sideways carousel on PC too -- about 2.5 cards in view, the mouse wheel and the arrows
+     slide it one stop at a time, dots underneath; a little wider than the text column */
+  .carousel { position: relative; width: min(76rem, calc(100vw - 112px)); left: 50%; transform: translateX(-50%); margin-top: 34px; }
+  .works.multi { width: 100%; max-width: none; margin: 0; flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto;
+                 overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; padding: 2px 0 6px; }
+  .works.multi::-webkit-scrollbar { display: none; }
+  .works.multi .work { flex: 0 0 calc((100% - 36px) / 2.5); scroll-snap-align: start; }
+  @media (max-width: 1000px) { .works.multi .work { flex-basis: calc((100% - 18px) / 1.6); } }
+  .car-btn { position: absolute; top: 34%; z-index: 2; width: 48px; height: 48px; margin-top: -24px; border-radius: 50%;
+             display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--paper);
+             background: rgba(20, 26, 28, .94); border: 1px solid var(--line); box-shadow: 0 8px 22px rgba(0, 0, 0, .4);
+             transition: opacity .2s ease, border-color .2s ease; }
+  .car-btn:hover { border-color: var(--oak); }
+  .car-btn[disabled] { opacity: 0; pointer-events: none; }
+  .car-btn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .car-prev { left: -24px; }
+  .car-next { right: -24px; }
   .work { flex: 0 1 calc((100% - 36px) / 3); display: flex; flex-direction: column; background: rgba(20, 26, 28, .86); border: 1px solid var(--line); border-radius: 14px;
           overflow: hidden; color: inherit; text-decoration: none; transition: border-color .2s ease; }
   /* videos: a play mark on the photo; the card opens the pop-up player */
@@ -164,7 +172,10 @@
   .work .go { margin-top: 14px; font-weight: 600; color: var(--oak); }
   .soon { max-width: 30rem; margin: 30px auto 0; border-top: 1px solid rgba(236, 232, 223, .16); border-bottom: 1px solid rgba(236, 232, 223, .16); padding: 22px 0; color: #c5ccce; }
   .soon b { display: block; color: var(--paper); font-weight: 600; margin-bottom: 4px; }
-  .dots { display: none; }
+  .dots { display: flex; justify-content: center; gap: 8px; margin-top: 16px; }
+  .dots:empty { display: none; }
+  .dots i { width: 7px; height: 3px; border-radius: 2px; background: var(--line); cursor: pointer; transition: width .2s ease, background .2s ease; }
+  .dots i.on { width: 20px; background: var(--oak); }
   .ask-narrow { margin-top: 30px; }
   .sticky-ask { display: none; }
 
@@ -197,8 +208,10 @@
                                          background: rgba(20, 26, 28, .82); padding: 16px 16px 18px; }
     .about h3 { font-size: 1.3rem; }
     /* the work becomes a carousel, the next piece peeking in */
-    .works.four { width: auto; left: 0; transform: none; }
-    .works.four .work { flex-basis: 84%; }
+    .carousel { width: auto; left: 0; transform: none; margin-top: 0; }
+    .car-btn { display: none; }
+    .works.multi { margin: 26px -18px 0; padding: 0 18px 4px; scroll-padding-inline: 18px; width: auto; }
+    .works.multi .work { flex-basis: 84%; }
     .works { display: flex; flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: 18px; gap: 12px;
              margin: 26px -18px 0; padding: 0 18px 4px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
     .works::-webkit-scrollbar { display: none; }
@@ -221,6 +234,7 @@
     html { scroll-behavior: auto; }
     .fade { animation: none; }
     .toggle .ind, .work .thumb, .dots i { transition: none; }
+    .works.multi { scroll-behavior: auto; }
     .backdrop .bg.kb-a, .backdrop .bg.kb-b { animation: none; }
   }
 </style>
@@ -375,8 +389,13 @@
     var items = WORK.filter(function (w) { return w.type === id && w.show; });
     var mail = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(s.title + ' enquiry');
     var ask = '<a class="btn btn-oak" href="' + mail + '">' + esc(s.ask) + '</a>';
+    var multi = items.length > 1;
+    var arrow = function (cls, label, d) {
+      return '<button class="car-btn ' + cls + '" type="button" aria-label="' + label + '"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + d + '"/></svg></button>';
+    };
     var works = items.length
-      ? '<div class="works' + (items.length >= 4 ? ' four' : '') + '">' + items.map(function (w) {
+      ? (multi ? '<div class="carousel">' + arrow('car-prev', 'Previous', 'm15 6-6 6 6 6') : '') +
+        '<div class="works' + (multi ? ' multi' : '') + '">' + items.map(function (w) {
           var inner = '<div class="ph"><div class="thumb"' + (w.thumb ? ' style="background-image:url(' + esc(w.thumb) + ')"' : '') + '></div>' +
             (w.video ? '<span class="play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 4.5v15l12-7.5z"/></svg></span>' : '') + '</div>' +
             '<div class="info"><h4>' + esc(w.title) + '</h4>' +
@@ -388,25 +407,74 @@
             ? '<a class="work" href="' + esc(w.link) + '" target="_blank" rel="noopener">' + inner + '</a>'
             : '<article class="work">' + inner + '</article>';
         }).join('') + '</div>' +
-        (items.length > 1 ? '<div class="dots" aria-hidden="true">' + items.map(function (w, i) { return '<i' + (i ? '' : ' class="on"') + '></i>'; }).join('') + '</div>' : '')
+        (multi ? arrow('car-next', 'Next', 'm9 6 6 6-6 6') + '</div><div class="dots" aria-hidden="true"></div>' : '')
       : '<div class="soon"><b>' + esc(s.soon) + '</b><a href="' + mail + '">Email ' + EMAIL + '</a></div>';
     panel.innerHTML =
       '<div class="about fade"><h3>' + esc(s.title) + '</h3><p>' + esc(s.blurb) + '</p></div>' +
       '<ul class="points fade">' + s.points.map(function (p) { return '<li><b>' + esc(p[0].replace(/\.$/, '')) + '</b>' + esc(p[1]) + '</li>'; }).join('') + '</ul>' +
       '<div class="fade">' + works + '<div class="ask-narrow">' + ask + '</div></div>';
     document.getElementById('stickyAsk').innerHTML = ask;
-    // phones: the carousel's dots follow the swipe
-    var grid = panel.querySelector('.works'), dots = panel.querySelectorAll('.dots i');
-    if (grid && dots.length) grid.addEventListener('scroll', function () {
-      var r = grid.getBoundingClientRect(), best = 0, bestD = Infinity;
-      for (var k = 0; k < grid.children.length; k++) {
-        var d = Math.abs(grid.children[k].getBoundingClientRect().left - r.left - 18);
-        if (d < bestD) { bestD = d; best = k; }
-      }
-      dots.forEach(function (d, k) { d.classList.toggle('on', k === best); });
-    }, { passive: true });
+    carousel(panel);
     if (location.hash !== '#' + id) history.replaceState(null, '', '#' + id);
   }
+
+  // The carousel (PC and phone): it rests on "stops" -- each card's start, capped at the end of the row -- one dot per
+  // stop. The arrows and dots move between stops; on PC the mouse wheel does too, one stop per flick, and at either end
+  // it lets go so the page carries on scrolling.
+  var rebuild = null;
+  function carousel(panel) {
+    rebuild = null;
+    var grid = panel.querySelector('.works.multi');
+    if (!grid) return;
+    var car = grid.parentNode, prev = car.querySelector('.car-prev'), next = car.querySelector('.car-next');
+    var dotsEl = panel.querySelector('.dots'), S = [], acc = 0, lock = false;
+    function stops() {
+      var pad = parseFloat(getComputedStyle(grid).paddingLeft) || 0, max = grid.scrollWidth - grid.clientWidth;
+      var gl = grid.getBoundingClientRect().left, out = [];
+      [].forEach.call(grid.children, function (c) {
+        var x = Math.min(max, Math.max(0, Math.round(c.getBoundingClientRect().left - gl + grid.scrollLeft - pad)));
+        if (!out.length || x - out[out.length - 1] > 8) out.push(x);
+      });
+      return out;
+    }
+    function cur() {
+      var x = grid.scrollLeft, best = 0;
+      S.forEach(function (s, i) { if (Math.abs(s - x) < Math.abs(S[best] - x)) best = i; });
+      return best;
+    }
+    function paint() {
+      var k = cur();
+      dotsEl.querySelectorAll('i').forEach(function (d, i) { d.classList.toggle('on', i === k); });
+      prev.disabled = k === 0;
+      next.disabled = k >= S.length - 1;
+    }
+    function go(i) { grid.scrollTo({ left: S[Math.max(0, Math.min(S.length - 1, i))], behavior: 'smooth' }); }
+    function build() {
+      S = stops();
+      dotsEl.innerHTML = S.length > 1 ? S.map(function () { return '<i></i>'; }).join('') : '';
+      dotsEl.querySelectorAll('i').forEach(function (d, i) { d.addEventListener('click', function () { go(i); }); });
+      paint();
+    }
+    prev.addEventListener('click', function () { go(cur() - 1); });
+    next.addEventListener('click', function () { go(cur() + 1); });
+    grid.addEventListener('scroll', paint, { passive: true });
+    grid.addEventListener('wheel', function (e) {
+      if (S.length < 2 || Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;     // sideways trackpad swipes scroll natively
+      var k = cur(), dir = e.deltaY > 0 ? 1 : -1;
+      if ((dir > 0 && k >= S.length - 1) || (dir < 0 && k === 0)) return;        // at an end: the page scrolls on
+      e.preventDefault();
+      if (lock) return;
+      acc += e.deltaY;
+      if (Math.abs(acc) < 25) return;
+      acc = 0; lock = true;
+      go(k + dir);
+      setTimeout(function () { lock = false; }, 420);
+    }, { passive: false });
+    build();
+    rebuild = build;
+  }
+  var rsz = null;
+  addEventListener('resize', function () { clearTimeout(rsz); rsz = setTimeout(function () { if (rebuild) rebuild(); }, 150); });
 
   // backdrop slideshow: two layers, the next render fades in over the last and drifts while it is up; it changes by
   // itself every SLIDE_MS, always. With reduced motion (e.g. Windows animation effects off, as on David's PC: the
