@@ -125,10 +125,10 @@
           overflow: hidden; color: inherit; text-decoration: none; transition: border-color .2s ease; }
   /* videos: a play mark on the photo; the card opens the pop-up player */
   .work .ph { position: relative; }
-  .work .play { position: absolute; left: 14px; bottom: 14px; width: 52px; height: 52px; border-radius: 50%;
+  .work .play { position: absolute; left: 50%; top: 50%; width: 60px; height: 60px; margin: -30px 0 0 -30px; border-radius: 50%;
                 background: rgba(15, 19, 21, .72); border: 2px solid var(--oak); display: flex; align-items: center; justify-content: center;
                 transition: background .2s ease; }
-  .work .play svg { width: 20px; height: 20px; fill: var(--oak); margin-left: 3px; }
+  .work .play svg { width: 22px; height: 22px; fill: var(--oak); margin-left: 4px; }
   .work:hover .play { background: var(--oak); }
   .work:hover .play svg { fill: var(--oak-ink); }
 
@@ -371,7 +371,10 @@
     // videos open in the pop-up player
     { type: 'video', title: 'Beauty salon ad', video: 'video/omra-spooky-tuesday.mp4', poster: 'video/omra-poster.jpg',
       cta: 'Play the ad', thumb: 'video/omra-thumb.jpg', show: true,
-      meta: [['Length', '14 sec'], ['For', 'Reels, TikTok'], ['Where', 'Dublin 4']] }
+      meta: [['Length', '14 sec'], ['For', 'Reels, TikTok'], ['Where', 'Dublin 4']] },
+    // websites we built (no link while the site is not hosted publicly)
+    { type: 'web', title: 'Amazing Maintenance', thumb: 'amazing-maintenance.jpg', show: true,
+      meta: [['Trade', 'Property'], ['Built for', 'Phone, PC'], ['Where', 'Brighton']] }
   ];
 
   var IDS = ['tours', 'video', 'web'];
