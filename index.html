@@ -122,7 +122,7 @@
   .works { display: flex; flex-wrap: wrap; justify-content: center; gap: 18px; }
   /* more than one piece: a sideways carousel on PC too -- about 2.5 cards in view, the mouse wheel and the arrows
      slide it one stop at a time, dots underneath; a little wider than the text column */
-  .carousel { position: relative; width: min(76rem, calc(100vw - 112px)); left: 50%; transform: translateX(-50%); margin-top: 34px; }
+  .carousel { position: relative; width: min(76rem, calc(100vw - 176px)); left: 50%; transform: translateX(-50%); margin-top: 34px; }
   .works.multi { width: 100%; max-width: none; margin: 0; flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto;
                  overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; padding: 2px 0 6px; }
   .works.multi::-webkit-scrollbar { display: none; }
@@ -135,8 +135,8 @@
   .car-btn:hover { border-color: var(--oak); }
   .car-btn[disabled] { opacity: 0; pointer-events: none; }
   .car-btn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
-  .car-prev { left: -24px; }
-  .car-next { right: -24px; }
+  .car-prev { left: -66px; }      /* outside the row, with a gap */
+  .car-next { right: -66px; }
   .work { flex: 0 1 calc((100% - 36px) / 3); display: flex; flex-direction: column; background: rgba(20, 26, 28, .86); border: 1px solid var(--line); border-radius: 14px;
           overflow: hidden; color: inherit; text-decoration: none; transition: border-color .2s ease; }
   /* videos: a play mark on the photo; the card opens the pop-up player */
@@ -174,7 +174,7 @@
   .soon b { display: block; color: var(--paper); font-weight: 600; margin-bottom: 4px; }
   .dots { display: flex; justify-content: center; gap: 8px; margin-top: 16px; }
   .dots:empty { display: none; }
-  .dots i { width: 7px; height: 3px; border-radius: 2px; background: var(--line); cursor: pointer; transition: width .2s ease, background .2s ease; }
+  .dots i { width: 7px; height: 3px; border-radius: 2px; background: rgba(236, 232, 223, .3); cursor: pointer; transition: width .2s ease, background .2s ease; }
   .dots i.on { width: 20px; background: var(--oak); }
   .ask-narrow { margin-top: 30px; }
   .sticky-ask { display: none; }
