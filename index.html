@@ -19,6 +19,8 @@
   - Backdrop: add each new tour's best views to BACKGROUNDS (bg/ folder, about 1600x900 JPG, panels hidden
     with the tour's eye button).
   - No prices on the page on purpose: every job is quoted.
+  - Videos: a WORK item with video: '<file>' opens in a pop-up player (16 Oct 2026); files live in video/.
+  - Websites carry a care plan (SERVICES.web.plan), rendered under the selling points.
 -->
 <style>
   :root {
@@ -117,10 +119,41 @@
   .fade { animation: fade .35s ease both; }
   @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 
-  /* the work: photo, name, and a drawing-sheet title block */
-  .works { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; align-content: start; }
-  .work { display: flex; flex-direction: column; background: rgba(20, 26, 28, .86); border: 1px solid var(--line); border-radius: 14px;
+  /* the work: photo, name, and a drawing-sheet title block; three across, a shorter last row stays centred */
+  .works { display: flex; flex-wrap: wrap; justify-content: center; gap: 18px; }
+  .work { flex: 0 1 calc((100% - 36px) / 3); display: flex; flex-direction: column; background: rgba(20, 26, 28, .86); border: 1px solid var(--line); border-radius: 14px;
           overflow: hidden; color: inherit; text-decoration: none; transition: border-color .2s ease; }
+  /* videos: a play mark on the photo; the card opens the pop-up player */
+  .work .ph { position: relative; }
+  .work .play { position: absolute; left: 14px; bottom: 14px; width: 52px; height: 52px; border-radius: 50%;
+                background: rgba(15, 19, 21, .72); border: 2px solid var(--oak); display: flex; align-items: center; justify-content: center;
+                transition: background .2s ease; }
+  .work .play svg { width: 20px; height: 20px; fill: var(--oak); margin-left: 3px; }
+  .work:hover .play { background: var(--oak); }
+  .work:hover .play svg { fill: var(--oak-ink); }
+
+  /* pop-up player */
+  .lb { position: fixed; inset: 0; z-index: 20; display: flex; align-items: center; justify-content: center;
+        padding: calc(16px + env(safe-area-inset-top, 0px)) 16px calc(16px + env(safe-area-inset-bottom, 0px));
+        background: rgba(8, 10, 11, .93); }
+  .lb[hidden] { display: none; }
+  .lb video { display: block; height: min(88vh, 1280px); max-width: 100%; aspect-ratio: 9 / 16; border-radius: 12px; background: #000; }
+  .lb-x { position: absolute; top: calc(14px + env(safe-area-inset-top, 0px)); right: 14px; width: 44px; height: 44px; border-radius: 50%;
+          border: 1px solid var(--line); background: var(--raise); color: var(--paper); font: 400 1.6rem/1 var(--body); cursor: pointer; }
+  .lb-x:hover { border-color: var(--oak); }
+
+  /* websites: the care plan */
+  .plan { max-width: 64rem; margin: 44px auto 0; padding: 30px 30px 32px; background: rgba(20, 26, 28, .88);
+          border: 1px solid var(--line); border-radius: 16px; }
+  .plan h3 { font-size: 1.55rem; font-weight: 700; margin-top: 8px; }
+  .plan .plan-lede { color: #d3d9da; max-width: 38rem; margin: 10px auto 0; }
+  .plan-list { list-style: none; padding: 0; margin: 28px 0 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+               gap: 24px 22px; text-align: left; }
+  .plan-list li { display: grid; grid-template-columns: 24px 1fr; gap: 10px; font-size: .9rem; line-height: 1.5; color: #c5ccce; }
+  .plan-list svg { width: 22px; height: 22px; fill: none; stroke: var(--oak); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; margin-top: 1px; }
+  .plan-list b { display: block; margin-bottom: 3px; font: 650 1rem/1.3 var(--display); font-stretch: 106%; letter-spacing: -0.01em; color: var(--paper); }
+  .plan .textlink { display: inline-block; margin-top: 28px; }
+  @media (max-width: 1000px) { .plan-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   .work:hover { border-color: #4b5558; }
   .work .ph { overflow: hidden; }
   .work .thumb { aspect-ratio: 4 / 3; background: #0d1112 center / cover no-repeat; transition: transform .5s ease; }
@@ -168,8 +201,11 @@
                                          background: rgba(20, 26, 28, .82); padding: 16px 16px 18px; }
     .about h3 { font-size: 1.3rem; }
     /* the work becomes a carousel, the next piece peeking in */
-    .works { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: 18px; gap: 12px;
+    .works { display: flex; flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: 18px; gap: 12px;
              margin: 26px -18px 0; padding: 0 18px 4px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+    .plan { margin-top: 30px; padding: 24px 18px 26px; }
+    .plan h3 { font-size: 1.3rem; }
+    .plan-list { grid-template-columns: 1fr; gap: 16px; }
     .works::-webkit-scrollbar { display: none; }
     .work { flex: 0 0 84%; scroll-snap-align: start; }
     .work:only-child { flex-basis: 100%; }
@@ -230,6 +266,11 @@
 
 <div class="sticky-ask" id="stickyAsk"></div>
 
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Video" hidden>
+  <button class="lb-x" id="lbX" type="button" aria-label="Close the video">&times;</button>
+  <video id="lbV" controls playsinline preload="none"></video>
+</div>
+
 <footer>
   <div class="wrap">
     <span class="label">irish3dvendor &middot; Co. Kerry, Ireland</span>
@@ -254,7 +295,11 @@
     { src: 'bg/farmhouse-front.jpg', cap: 'Farmhouse \u00b7 Outside' },
     { src: 'bg/farmhouse-living.jpg', cap: 'Farmhouse \u00b7 Sitting room' },
     { src: 'bg/farmhouse-kitchen.jpg', cap: 'Farmhouse \u00b7 Kitchen' },
-    { src: 'bg/farmhouse-bed1.jpg', cap: 'Farmhouse \u00b7 Bedroom' }
+    { src: 'bg/farmhouse-bed1.jpg', cap: 'Farmhouse \u00b7 Bedroom' },
+    { src: 'bg/pub-bar.jpg', cap: 'Pub house \u00b7 Bar' },
+    { src: 'bg/pub-living.jpg', cap: 'Pub house \u00b7 Living room' },
+    { src: 'bg/pub-yard.jpg', cap: 'Pub house \u00b7 Hot tub yard' },
+    { src: 'bg/pub-bed.jpg', cap: 'Pub house \u00b7 Bedroom' }
   ];
   var SLIDE_MS = 7000;           // each build is up for 7 seconds
 
@@ -271,8 +316,8 @@
       ask: 'Ask about a walkthrough'
     },
     video: {
-      title: 'Property videos',
-      blurb: 'Short, professionally edited videos that stop the scroll and show your property at its best on Instagram, TikTok and Facebook.',
+      title: 'Videos and ads',
+      blurb: 'Short, professionally edited videos that stop the scroll and show your property or business at its best on Instagram, TikTok and Facebook.',
       points: [['Made for the feed.', 'Reels and TikToks cut to the music, sized for every platform.'],
                ['Your best side first.', 'The view, the rooms and the extras that sell a stay, captioned and colour graded.'],
                ['More bookings.', 'Video is what people watch and share, and it brings them back to your listing.'],
@@ -286,7 +331,22 @@
       points: [['Direct enquiries.', 'Guests contact you straight from your own site.'],
                ['Built for phones.', 'Fast on every phone, styled to your brand.'],
                ['Everything in one place.', 'Your 3D walkthrough, videos, photos and reviews, all on one page.'],
-               ['Looked after.', 'Hosting, updates and optimisation handled, so it keeps working for you.']],
+               ['Looked after.', 'A monthly care plan: hosting, updates, backups and your changes handled, so it keeps working for you.']],
+      // the care plan, shown under the selling points (no prices, like the rest of the page)
+      plan: {
+        label: 'Website care plan',
+        title: 'Looked after, every month',
+        lede: 'Most small websites slowly go stale: old software, no backups, last year’s prices. With the care plan your site stays fast, safe and up to date, and you never have to think about it.',
+        items: [['Updates and security', 'Software and the security certificate kept current, with regular security checks.'],
+                ['Daily backups', 'A fresh copy every day, so nothing is ever lost.'],
+                ['Watched around the clock', 'Uptime monitoring: if the site goes down, I know before your guests do.'],
+                ['Changes within 48 hours', 'New photos, prices, offers and text: send them by email and they are done.'],
+                ['Fast on every phone', 'Regular speed checks and optimised images, so every page loads in a blink.'],
+                ['Found on Google', 'Search tune-ups, with your Google Business details kept in step with the site.'],
+                ['Bookings tested', 'Enquiry forms, calendars and booking links checked every month.'],
+                ['A monthly report', 'One short, plain-English email: visitors, enquiries and what was done.']],
+        ask: 'Ask about website care'
+      },
       soon: 'Examples coming soon. Email for samples.',
       ask: 'Ask about a website'
     }
@@ -304,7 +364,14 @@
       meta: [['Rooms', '4 bed'], ['Outside', 'Sea views'], ['Where', 'Co. Kerry']] },
     { type: 'tours', title: 'Farmhouse', link: 'https://irish3dvendor-oss.github.io/rowan-house-3d/sample/',
       cta: 'Walk through it', thumb: 'farmhouse.jpg', show: true,
-      meta: [['Rooms', '4 bed'], ['Outside', 'Garden'], ['Where', 'Co. Kerry']] }
+      meta: [['Rooms', '4 bed'], ['Outside', 'Garden'], ['Where', 'Co. Kerry']] },
+    { type: 'tours', title: 'Pub house', link: 'https://irish3dvendor-oss.github.io/killorglin-pub-3d/sample/',
+      cta: 'Walk through it', thumb: 'pub.jpg', show: true,
+      meta: [['Rooms', '4 bed'], ['Outside', 'Hot tub'], ['Where', 'Co. Kerry']] },
+    // videos open in the pop-up player
+    { type: 'video', title: 'Beauty salon ad', video: 'video/omra-spooky-tuesday.mp4', poster: 'video/omra-poster.jpg',
+      cta: 'Play the ad', thumb: 'video/omra-thumb.jpg', show: true,
+      meta: [['Length', '14 sec'], ['For', 'Reels, TikTok'], ['Where', 'Dublin 4']] }
   ];
 
   var IDS = ['tours', 'video', 'web'];
@@ -327,19 +394,31 @@
     var ask = '<a class="btn btn-oak" href="' + mail + '">' + esc(s.ask) + '</a>';
     var works = items.length
       ? '<div class="works">' + items.map(function (w) {
-          var inner = '<div class="ph"><div class="thumb"' + (w.thumb ? ' style="background-image:url(' + esc(w.thumb) + ')"' : '') + '></div></div>' +
+          var inner = '<div class="ph"><div class="thumb"' + (w.thumb ? ' style="background-image:url(' + esc(w.thumb) + ')"' : '') + '></div>' +
+            (w.video ? '<span class="play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 4.5v15l12-7.5z"/></svg></span>' : '') + '</div>' +
             '<div class="info"><h4>' + esc(w.title) + '</h4>' +
             (w.meta ? '<dl class="tb">' + w.meta.map(function (m) { return '<div><dt>' + esc(m[0]) + '</dt><dd>' + esc(m[1]) + '</dd></div>'; }).join('') + '</dl>' : '') +
-            (w.link ? '<span class="go">' + esc(w.cta || 'View') + ' &rarr;</span>' : '') + '</div>';
+            (w.link || w.video ? '<span class="go">' + esc(w.cta || 'View') + ' &rarr;</span>' : '') + '</div>';
+          if (w.video)        // opens the pop-up player (the link still plays the file if scripts are off)
+            return '<a class="work" href="' + esc(w.video) + '" data-video="' + esc(w.video) + '" data-poster="' + esc(w.poster || '') + '">' + inner + '</a>';
           return w.link
             ? '<a class="work" href="' + esc(w.link) + '" target="_blank" rel="noopener">' + inner + '</a>'
             : '<article class="work">' + inner + '</article>';
         }).join('') + '</div>' +
         (items.length > 1 ? '<div class="dots" aria-hidden="true">' + items.map(function (w, i) { return '<i' + (i ? '' : ' class="on"') + '></i>'; }).join('') + '</div>' : '')
       : '<div class="soon"><b>' + esc(s.soon) + '</b><a href="' + mail + '">Email ' + EMAIL + '</a></div>';
+    var plan = '';
+    if (s.plan) {
+      var tick = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12.5 9.5 17.5 19.5 6.5"/></svg>';
+      plan = '<section class="plan fade" aria-labelledby="plan-h"><p class="label">' + esc(s.plan.label) + '</p>' +
+        '<h3 id="plan-h">' + esc(s.plan.title) + '</h3><p class="plan-lede">' + esc(s.plan.lede) + '</p>' +
+        '<ul class="plan-list">' + s.plan.items.map(function (p) { return '<li>' + tick + '<span><b>' + esc(p[0]) + '</b>' + esc(p[1]) + '</span></li>'; }).join('') + '</ul>' +
+        '<a class="textlink" href="mailto:' + EMAIL + '?subject=' + encodeURIComponent('Website care enquiry') + '">' + esc(s.plan.ask) + ' &rarr;</a></section>';
+    }
     panel.innerHTML =
       '<div class="about fade"><h3>' + esc(s.title) + '</h3><p>' + esc(s.blurb) + '</p></div>' +
       '<ul class="points fade">' + s.points.map(function (p) { return '<li><b>' + esc(p[0].replace(/\.$/, '')) + '</b>' + esc(p[1]) + '</li>'; }).join('') + '</ul>' +
+      plan +
       '<div class="fade">' + works + '<div class="ask-narrow">' + ask + '</div></div>';
     document.getElementById('stickyAsk').innerHTML = ask;
     // phones: the carousel's dots follow the swipe
@@ -397,6 +476,31 @@
     var next = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
     next.focus(); show(next.dataset.s);
   });
+  // pop-up player for the video work: closes on the X, a click outside the video, or Escape
+  (function () {
+    var lb = document.getElementById('lb'), v = document.getElementById('lbV'), back = null;
+    function open(src, poster) {
+      back = document.activeElement;
+      v.poster = poster || ''; v.src = src;
+      lb.hidden = false; document.body.style.overflow = 'hidden';
+      document.getElementById('lbX').focus();
+      var p = v.play(); if (p && p.catch) p.catch(function () {});
+    }
+    function close() {
+      if (lb.hidden) return;
+      v.pause(); v.removeAttribute('src'); v.load();
+      lb.hidden = true; document.body.style.overflow = '';
+      if (back) back.focus();
+    }
+    document.getElementById('detail').addEventListener('click', function (e) {
+      var a = e.target.closest('[data-video]'); if (!a) return;
+      e.preventDefault(); open(a.dataset.video, a.dataset.poster);
+    });
+    document.getElementById('lbX').addEventListener('click', close);
+    lb.addEventListener('click', function (e) { if (e.target === lb) close(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+  })();
+
   var start = (location.hash || '').slice(1);
   show(SERVICES[start] ? start : 'tours');
   // opened on a service link (#tours, #video, #web): jump straight to it
