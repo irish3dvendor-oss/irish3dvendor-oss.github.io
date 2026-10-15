@@ -120,6 +120,15 @@
 
   /* the work: photo, name, and a drawing-sheet title block; three across, a shorter last row stays centred */
   .works { display: flex; flex-wrap: wrap; justify-content: center; gap: 18px; }
+  /* four or more: one row of four, a little wider than the text column */
+  .works.four { width: min(76rem, calc(100vw - 48px)); max-width: none; position: relative; left: 50%; transform: translateX(-50%); }
+  .works.four .work { flex-basis: calc((100% - 54px) / 4); }
+  .works.four .tb div { padding: 7px 7px; }
+  .works.four .tb dd { font-size: .76rem; }
+  @media (max-width: 1180px) and (min-width: 761px) {
+    .works.four { width: 100%; left: 0; transform: none; }
+    .works.four .work { flex-basis: calc((100% - 18px) / 2); }
+  }
   .work { flex: 0 1 calc((100% - 36px) / 3); display: flex; flex-direction: column; background: rgba(20, 26, 28, .86); border: 1px solid var(--line); border-radius: 14px;
           overflow: hidden; color: inherit; text-decoration: none; transition: border-color .2s ease; }
   /* videos: a play mark on the photo; the card opens the pop-up player */
@@ -188,6 +197,8 @@
                                          background: rgba(20, 26, 28, .82); padding: 16px 16px 18px; }
     .about h3 { font-size: 1.3rem; }
     /* the work becomes a carousel, the next piece peeking in */
+    .works.four { width: auto; left: 0; transform: none; }
+    .works.four .work { flex-basis: 84%; }
     .works { display: flex; flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: 18px; gap: 12px;
              margin: 26px -18px 0; padding: 0 18px 4px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
     .works::-webkit-scrollbar { display: none; }
@@ -365,7 +376,7 @@
     var mail = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(s.title + ' enquiry');
     var ask = '<a class="btn btn-oak" href="' + mail + '">' + esc(s.ask) + '</a>';
     var works = items.length
-      ? '<div class="works">' + items.map(function (w) {
+      ? '<div class="works' + (items.length >= 4 ? ' four' : '') + '">' + items.map(function (w) {
           var inner = '<div class="ph"><div class="thumb"' + (w.thumb ? ' style="background-image:url(' + esc(w.thumb) + ')"' : '') + '></div>' +
             (w.video ? '<span class="play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 4.5v15l12-7.5z"/></svg></span>' : '') + '</div>' +
             '<div class="info"><h4>' + esc(w.title) + '</h4>' +
