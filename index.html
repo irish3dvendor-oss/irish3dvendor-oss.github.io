@@ -20,7 +20,6 @@
     with the tour's eye button).
   - No prices on the page on purpose: every job is quoted.
   - Videos: a WORK item with video: '<file>' opens in a pop-up player (16 Oct 2026); files live in video/.
-  - Websites carry a care plan (SERVICES.web.plan), rendered under the selling points.
 -->
 <style>
   :root {
@@ -142,29 +141,6 @@
           border: 1px solid var(--line); background: var(--raise); color: var(--paper); font: 400 1.6rem/1 var(--body); cursor: pointer; }
   .lb-x:hover { border-color: var(--oak); }
 
-  /* websites: the care plan -- compact (title, ask, chevron); the chevron opens what's included */
-  .plan { max-width: 64rem; margin: 44px auto 0; padding: 24px 30px 16px; background: rgba(20, 26, 28, .88);
-          border: 1px solid var(--line); border-radius: 16px; }
-  .plan h3 { font-size: 1.55rem; font-weight: 700; }
-  .plan-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .35s ease; }
-  .plan.open .plan-body { grid-template-rows: 1fr; }
-  .plan-inner { min-height: 0; overflow: hidden; visibility: hidden; transition: visibility 0s .35s; }
-  .plan.open .plan-inner { visibility: visible; transition-delay: 0s; }
-  .plan .plan-lede { color: #d3d9da; max-width: 38rem; margin: 24px auto 0; }
-  .plan-more { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; margin: 14px auto 0;
-               border-radius: 50%; border: 1px solid var(--line); background: var(--raise); color: var(--paper); cursor: pointer;
-               transition: border-color .2s ease; }
-  .plan-more:hover { border-color: var(--oak); }
-  .plan-more svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
-                   transition: transform .3s ease; }
-  .plan.open .plan-more svg { transform: rotate(180deg); }
-  .plan-list { list-style: none; padding: 0; margin: 28px 0 4px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
-               gap: 24px 22px; text-align: left; }
-  .plan-list li { display: grid; grid-template-columns: 24px 1fr; gap: 10px; font-size: .9rem; line-height: 1.5; color: #c5ccce; }
-  .plan-list svg { width: 22px; height: 22px; fill: none; stroke: var(--oak); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; margin-top: 1px; }
-  .plan-list b { display: block; margin-bottom: 3px; font: 650 1rem/1.3 var(--display); font-stretch: 106%; letter-spacing: -0.01em; color: var(--paper); }
-  .plan .textlink { display: inline-block; margin-top: 12px; }
-  @media (max-width: 1000px) { .plan-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   .work:hover { border-color: #4b5558; }
   .work .ph { overflow: hidden; }
   .work .thumb { aspect-ratio: 4 / 3; background: #0d1112 center / cover no-repeat; transition: transform .5s ease; }
@@ -214,9 +190,6 @@
     /* the work becomes a carousel, the next piece peeking in */
     .works { display: flex; flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: 18px; gap: 12px;
              margin: 26px -18px 0; padding: 0 18px 4px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
-    .plan { margin-top: 30px; padding: 20px 18px 14px; }
-    .plan h3 { font-size: 1.3rem; }
-    .plan-list { grid-template-columns: 1fr; gap: 16px; }
     .works::-webkit-scrollbar { display: none; }
     .work { flex: 0 0 84%; scroll-snap-align: start; }
     .work:only-child { flex-basis: 100%; }
@@ -236,7 +209,7 @@
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     .fade { animation: none; }
-    .toggle .ind, .work .thumb, .dots i, .plan-body, .plan-inner, .plan-more svg { transition: none; }
+    .toggle .ind, .work .thumb, .dots i { transition: none; }
     .backdrop .bg.kb-a, .backdrop .bg.kb-b { animation: none; }
   }
 </style>
@@ -342,21 +315,7 @@
       points: [['Direct enquiries.', 'Guests contact you straight from your own site.'],
                ['Built for phones.', 'Fast on every phone, styled to your brand.'],
                ['Everything in one place.', 'Your 3D walkthrough, videos, photos and reviews, all on one page.'],
-               ['Looked after.', 'A monthly care plan: hosting, updates, backups and your changes handled, so it keeps working for you.']],
-      // the care plan, shown under the selling points (no prices, like the rest of the page)
-      plan: {
-        title: 'Looked after, every month',
-        lede: 'Most small websites slowly go stale: old software, no backups, last year’s prices. With the care plan your site stays fast, safe and up to date, and you never have to think about it.',
-        items: [['Updates and security', 'Software and the security certificate kept current, with regular security checks.'],
-                ['Daily backups', 'A fresh copy every day, so nothing is ever lost.'],
-                ['Watched around the clock', 'Uptime monitoring: if the site goes down, I know before your guests do.'],
-                ['Changes within 48 hours', 'New photos, prices, offers and text: send them by email and they are done.'],
-                ['Fast on every phone', 'Regular speed checks and optimised images, so every page loads in a blink.'],
-                ['Found on Google', 'Search tune-ups, with your Google Business details kept in step with the site.'],
-                ['Bookings tested', 'Enquiry forms, calendars and booking links checked every month.'],
-                ['A monthly report', 'One short, plain-English email: visitors, enquiries and what was done.']],
-        ask: 'Ask about website care'
-      },
+               ['Looked after.', 'Hosting, updates and optimisation handled, so it keeps working for you.']],
       soon: 'Examples coming soon. Email for samples.',
       ask: 'Ask about a website'
     }
@@ -420,29 +379,11 @@
         }).join('') + '</div>' +
         (items.length > 1 ? '<div class="dots" aria-hidden="true">' + items.map(function (w, i) { return '<i' + (i ? '' : ' class="on"') + '></i>'; }).join('') + '</div>' : '')
       : '<div class="soon"><b>' + esc(s.soon) + '</b><a href="' + mail + '">Email ' + EMAIL + '</a></div>';
-    var plan = '';
-    if (s.plan) {
-      var tick = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12.5 9.5 17.5 19.5 6.5"/></svg>';
-      plan = '<section class="plan fade" aria-labelledby="plan-h"><h3 id="plan-h">' + esc(s.plan.title) + '</h3>' +
-        '<a class="textlink" href="mailto:' + EMAIL + '?subject=' + encodeURIComponent('Website care enquiry') + '">' + esc(s.plan.ask) + ' &rarr;</a>' +
-        '<div class="plan-body" id="plan-body"><div class="plan-inner"><p class="plan-lede">' + esc(s.plan.lede) + '</p>' +
-        '<ul class="plan-list">' + s.plan.items.map(function (p) { return '<li>' + tick + '<span><b>' + esc(p[0]) + '</b>' + esc(p[1]) + '</span></li>'; }).join('') + '</ul></div></div>' +
-        '<button class="plan-more" type="button" aria-expanded="false" aria-controls="plan-body" aria-label="Show what’s included">' +
-        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></section>';
-    }
     panel.innerHTML =
       '<div class="about fade"><h3>' + esc(s.title) + '</h3><p>' + esc(s.blurb) + '</p></div>' +
       '<ul class="points fade">' + s.points.map(function (p) { return '<li><b>' + esc(p[0].replace(/\.$/, '')) + '</b>' + esc(p[1]) + '</li>'; }).join('') + '</ul>' +
-      plan +
       '<div class="fade">' + works + '<div class="ask-narrow">' + ask + '</div></div>';
     document.getElementById('stickyAsk').innerHTML = ask;
-    // the care plan's chevron: compact <-> expanded
-    var more = panel.querySelector('.plan-more');
-    if (more) more.addEventListener('click', function () {
-      var open = more.closest('.plan').classList.toggle('open');
-      more.setAttribute('aria-expanded', String(open));
-      more.setAttribute('aria-label', open ? 'Hide what’s included' : 'Show what’s included');
-    });
     // phones: the carousel's dots follow the swipe
     var grid = panel.querySelector('.works'), dots = panel.querySelectorAll('.dots i');
     if (grid && dots.length) grid.addEventListener('scroll', function () {
