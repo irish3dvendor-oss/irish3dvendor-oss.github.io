@@ -8,7 +8,10 @@
 <meta name="description" content="3D walkthroughs of Kerry holiday homes, plus property videos and websites for the people who run them.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Uncial+Antiqua&display=swap">
+<link rel="icon" type="image/png" sizes="32x32" href="brand/favicon-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="brand/favicon-64.png">
+<link rel="apple-touch-icon" href="brand/apple-touch-icon.png">
 <!--
   Portfolio, redesigned 7 Oct 2026 ("still feels AI"): a property brochure / drawing set rather than an app.
   The 3D renders fade behind the hero; the work sits on a solid sheet that scrolls up over them. Left-aligned
@@ -64,7 +67,9 @@
   /* ---- top line ---- */
   .top { display: flex; align-items: center; justify-content: center; gap: 22px;
          padding-top: calc(20px + env(safe-area-inset-top, 0px)); padding-bottom: 20px; }
-  .word { font: 750 1.15rem/1 var(--display); font-stretch: 118%; letter-spacing: -0.01em; color: var(--paper); text-decoration: none; }
+  /* the logo (16 Oct 2026): the name in Uncial lettering, '3d' in the logo's gold; files in brand/ */
+  .word { font: 400 1.45rem/1 "Uncial Antiqua", Georgia, serif; color: var(--paper); text-decoration: none; }
+  .word span { color: #c9a14a; }
   .top a.mail { font: 500 .9rem/1 var(--body); color: var(--paper); text-decoration: none; border-bottom: 1px solid rgba(236, 232, 223, .35); padding-bottom: 3px; }
   .top a.mail:hover { border-color: var(--oak); }
   .top .short { display: none; }
@@ -243,7 +248,7 @@
 <div class="backdrop" aria-hidden="true"></div>
 
 <div class="wrap top">
-  <a class="word" href="#">irish3dvendor</a>
+  <a class="word" href="#" aria-label="irish3dvendor, home">irish<span>3d</span>vendor</a>
   <a class="mail" href="mailto:irish3dvendor@gmail.com"><span class="long">irish3dvendor@gmail.com</span><span class="short">Email</span></a>
 </div>
 
