@@ -313,7 +313,11 @@
     { src: 'bg/pub-bar.jpg', cap: 'Pub house \u00b7 Bar' },
     { src: 'bg/pub-living.jpg', cap: 'Pub house \u00b7 Living room' },
     { src: 'bg/pub-yard.jpg', cap: 'Pub house \u00b7 Hot tub yard' },
-    { src: 'bg/pub-bed.jpg', cap: 'Pub house \u00b7 Bedroom' }
+    { src: 'bg/pub-bed.jpg', cap: 'Pub house \u00b7 Bedroom' },
+    { src: 'bg/country-house-front.jpg', cap: 'Country house \u00b7 Outside' },
+    { src: 'bg/country-house-living.jpg', cap: 'Country house \u00b7 Living room' },
+    { src: 'bg/country-house-kitchen.jpg', cap: 'Country house \u00b7 Kitchen-diner' },
+    { src: 'bg/country-house-bed1.jpg', cap: 'Country house \u00b7 Bedroom' }
   ];
   var SLIDE_MS = 7000;           // each build is up for 7 seconds
 
@@ -355,6 +359,10 @@
   // yet. meta is the title block: [label, value] x 3.
   var WORK = [
     // shown unnamed (the /sample/ copy) until the owner agrees; the named tour is the one sent to them
+    // Ballyroe House (23 Oct 2026): the unnamed copy only, under a neutral address; not sent to the owner
+    { type: 'tours', title: 'Country house', link: 'https://irish3dvendor-oss.github.io/country-house-3d/',
+      cta: 'Walk through it', thumb: 'country-house.jpg', show: true,
+      meta: [['Rooms', '5 bed'], ['Outside', 'Gardens'], ['Where', 'Co. Kerry']] },
     { type: 'tours', title: 'Holiday lodge', link: 'https://irish3dvendor-oss.github.io/croughmore-lodge-3d/sample/',
       cta: 'Walk through it', thumb: 'lodge.jpg', show: true,
       meta: [['Rooms', '2 bed'], ['Outside', 'Garden'], ['Where', 'Co. Kerry']] },
